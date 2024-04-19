@@ -1,39 +1,42 @@
-import { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.css";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";  
+import { auth } from "../../firebase";  
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const [error, setError] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
 
-  const { dispatch } = useContext(AuthContext);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/");
+      }
+    });
 
-  const handleLogin = (e) => {
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        dispatch({ type: "LOGIN", payload: user });
-        navigate("/");
-      })
-      .catch((error) => {
-        setError(true);
-      });
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/");
+    } catch (error) {
+      setError(true);
+    }
   };
+
 
   return (
     <div className="login-container">
-         <h1 className="login-title">
-          <img src="/logo.jpg" alt="Logo" className="login-logo" /> Nidi Rentals
-        </h1>
+      <h1 className="login-title">
+        <img src="/logo.jpg" alt="Logo" className="login-logo" /> Nidi Rentals
+      </h1>
       <form className="login-form" onSubmit={handleLogin}>
         <input
           type="email"
@@ -41,6 +44,7 @@ const Login = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
@@ -48,9 +52,10 @@ const Login = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button type="submit" className="login-button">Login</button>
-        {error && <span className="login-error">Wrong E-mail or Password!</span>}
+        {error && <span className="login-error">Wrong email or password!</span>}
       </form>
     </div>
   );

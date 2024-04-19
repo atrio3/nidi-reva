@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebase';
-import './BookingData.css'; 
-import { Search } from '@mui/icons-material';
+import './BookingData.css';
+import { Search } from '@mui/icons-material'; 
 
 const BookingData = () => {
     const [tableData, setTableData] = useState([]);
@@ -30,10 +30,11 @@ const BookingData = () => {
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
-        };
-
-        fetchData();
+            }
+            fetchData();
     }, []);
+
+    
 
     useEffect(() => {
         if (searchQuery !== '') {
@@ -44,6 +45,7 @@ const BookingData = () => {
         }
     }, [searchQuery, tableData]);
 
+   
 
     const formatTime = (timeString) => {
         const timeParts = timeString.split(':');
@@ -96,8 +98,9 @@ const BookingData = () => {
                             <th>Drop-off Date</th>
                             <th>Time</th>
                             <th>Total Paid Amount</th>
-                        </tr>
-                    </thead>
+
+                       </tr>
+                       </thead>
                     <tbody>
                         {filteredData.map((userDetails, index) => (
                             <tr key={userDetails.id}>
