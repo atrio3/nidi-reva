@@ -1,0 +1,12 @@
+.home {
+  display: flex;
+  height: 100vh;
+}
+
+.homeContainer {
+  flex: 6;
+}
+
+.homeContainer h1 {
+  text-align: center;
+}
