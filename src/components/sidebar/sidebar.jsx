@@ -1,13 +1,21 @@
+import React from 'react';
 import { BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
 import './sidebar.css';
+import { signOut } from 'firebase/auth'; 
+import { auth } from '../../firebase'; 
 
 function Sidebar({ open, toggleSidebar }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      localStorage.removeItem('authToken');
+      navigate("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (
@@ -29,6 +37,7 @@ function Sidebar({ open, toggleSidebar }) {
             <BsFillArchiveFill className='icon' /> Vehicles
           </Link>
         </li>
+
         <li className='sidebar-list-item'>
           <button className='logout-button' onClick={handleLogout}>
             <BsPeopleFill className='icon' /> Logout
