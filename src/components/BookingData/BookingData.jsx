@@ -232,7 +232,7 @@ const BookingData = () => {
 
   return (
     <div className="booking-data-container">
-      <h2 className="booking-data-title">KJC KOTHANUR Bookings:</h2>
+      <h2 className="booking-data-title">REVA Bookings:</h2>
       <div className="search-container">
         <input
           type="text"
