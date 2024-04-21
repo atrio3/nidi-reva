@@ -130,7 +130,7 @@ const BookingData = () => {
       }));
       setRequiredData(data);
       const indexInQuantity = data.location.findIndex(
-        (item) => item === "KJC KOTHANUR"
+        (item) => item === "REVA"
       );
       setNewQuantity(data.quantity[indexInQuantity] + 1);
     }
@@ -153,7 +153,7 @@ const BookingData = () => {
       return;
     }
     const updatedQuantities = [...data.quantity];
-    const index = data.location.findIndex((item) => item === "KJC KOTHANUR");
+    const index = data.location.findIndex((item) => item === "REVA");
     updatedQuantities[index] = newQuantity;
 
     console.log(updatedQuantities);
