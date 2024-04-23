@@ -188,6 +188,7 @@ const BookingData = () => {
       time,
       vehicle_category,
       userLocation,
+      image_Url,
     } = userDetails;
 
     const postRes = await fetch(
@@ -211,6 +212,7 @@ const BookingData = () => {
           time,
           rentAmount,
           userLocation,
+          image_Url,
         }),
       }
     );
@@ -263,6 +265,7 @@ const BookingData = () => {
               <th>Drop-off Date</th>
               <th>Time</th>
               <th>Total Paid Amount</th>
+              <th>Driving Id Image</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -284,6 +287,11 @@ const BookingData = () => {
                 <td>{formatDate(userDetails.dropOffDate)}</td>
                 <td>{formatTime(userDetails.time)}</td>
                 <td>₹{userDetails.rentAmount}</td>
+                <tr>
+                  <td>
+                    <a href={userDetails.image_Url}>Click Here</a>
+                  </td>
+                </tr>
                 <td>
                   {completionStatus[index] !== "completed" ? (
                     <button

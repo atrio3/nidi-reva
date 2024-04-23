@@ -124,7 +124,11 @@ const UpdatedBooking = () => {
                 <td>{formatDate(booking.dropOffDate)}</td>
                 <td>{formatTime(booking.time)}</td>
                 <td>₹{booking.rentAmount}</td>
-                <td>{booking.image_Url}</td>
+                <tr>
+                  <td>
+                    <a href={booking.image_Url}>Click Here</a>
+                  </td>
+                </tr>
               </tr>
             ))}
           </tbody>
