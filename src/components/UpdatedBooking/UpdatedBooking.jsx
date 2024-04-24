@@ -75,7 +75,7 @@ const UpdatedBooking = () => {
   };
 
   return (
-    <div>
+    <div className="updated-bookings">
       <h2>Updated Bookings</h2>
       <div className="search-container">
         <input
