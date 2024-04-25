@@ -27,15 +27,15 @@ function App() {
           />
           <Route
             path="/vehicles"
-            element={currentUser ? <Vehicle /> : <Navigate to="/vehicles" />}
+            element={currentUser ? <Vehicle /> : <Navigate to="/" />}
           />
           <Route
             path="/booking"
-            element={currentUser ? <Booking /> : <Navigate to="/booking" />}
+            element={currentUser ? <Booking /> : <Navigate to="/" />}
           />
           <Route
             path="/completed"
-            element={currentUser ? <Completed /> : <Navigate to="/completed" />}
+            element={currentUser ? <Completed /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>
