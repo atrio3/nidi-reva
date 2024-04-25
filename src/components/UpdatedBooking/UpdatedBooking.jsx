@@ -3,6 +3,7 @@ import { ref, onValue } from "firebase/database";
 import { database } from "../../firebase"; // Ensure this path is correct
 import { Search } from "@mui/icons-material";
 import "./UpdatedBooking.css";
+import { CSVLink } from "react-csv";
 
 const UpdatedBooking = () => {
   // State to store fetched bookings
@@ -74,19 +75,44 @@ const UpdatedBooking = () => {
     return `${day}/${month}/${year}`;
   };
 
+  const headers = [
+    { label: "Name", key: "name" },
+    { label: "Email", key: "email" },
+    { label: "Address", key: "address" },
+    { label: "Phone no", key: "tel" },
+    { label: "Driving ID", key: "drivingID" },
+    { label: "Selected Vehicle", key: "vehicle_name" },
+    { label: "Vehicle Price", key: "vehicle_price" },
+    { label: "Vehicle Category", key: "vehicle_category" },
+    { label: "Pickup Date", key: "pickUpDate" },
+    { label: "Drop-off Date", key: "dropOffDate" },
+    { label: "Time", key: "time" },
+    { label: "Total Paid Amount", key: "rentAmount" },
+    { label: "Driving ID Image", key: "image_Url" },
+  ];
+
   return (
     <div className="updated-bookings">
       <h2>Updated Bookings</h2>
-      <div className="search-container">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by Name"
-        />
-        <button onClick={() => setSearchQuery("")}>
-          <Search />
-        </button>
+      <div className="search-export-container">
+        <div className="search-container">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by Name"
+          />
+          <button onClick={() => setSearchQuery("")}>
+            <Search />
+          </button>
+        </div>
+        {filteredData.length != 0 && (
+          <div className="export-container">
+            <CSVLink data={filteredData} headers={headers}>
+              <button>Export CSV</button>
+            </CSVLink>
+          </div>
+        )}
       </div>
       <div className="table-container">
         <table className="booking-table">
@@ -109,28 +135,31 @@ const UpdatedBooking = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.slice().reverse().map((booking, index) => (
-              <tr key={booking.id}>
-                <td>{index + 1}</td>
-                <td>{booking.name}</td>
-                <td>{booking.email}</td>
-                <td>{booking.address}</td>
-                <td>{booking.tel}</td>
-                <td>{booking.drivingID}</td>
-                <td>{booking.vehicle_name}</td>
-                <td>₹{booking.vehicle_price}</td>
-                <td>{booking.vehicle_category}</td>
-                <td>{formatDate(booking.pickUpDate)}</td>
-                <td>{formatDate(booking.dropOffDate)}</td>
-                <td>{formatTime(booking.time)}</td>
-                <td>₹{booking.rentAmount}</td>
-                <tr>
-                  <td>
-                    <a href={booking.image_Url}>Click Here</a>
-                  </td>
+            {filteredData
+              .slice()
+              .reverse()
+              .map((booking, index) => (
+                <tr key={booking.id}>
+                  <td>{index + 1}</td>
+                  <td>{booking.name}</td>
+                  <td>{booking.email}</td>
+                  <td>{booking.address}</td>
+                  <td>{booking.tel}</td>
+                  <td>{booking.drivingID}</td>
+                  <td>{booking.vehicle_name}</td>
+                  <td>₹{booking.vehicle_price}</td>
+                  <td>{booking.vehicle_category}</td>
+                  <td>{formatDate(booking.pickUpDate)}</td>
+                  <td>{formatDate(booking.dropOffDate)}</td>
+                  <td>{formatTime(booking.time)}</td>
+                  <td>₹{booking.rentAmount}</td>
+                  <tr>
+                    <td>
+                      <a href={booking.image_Url}>Click Here</a>
+                    </td>
+                  </tr>
                 </tr>
-              </tr>
-            ))}
+              ))}
           </tbody>
         </table>
       </div>

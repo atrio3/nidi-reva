@@ -130,3 +130,22 @@ button:disabled {
   border: 1px solid #aaa; /* Grey border */
   cursor: not-allowed; /* Cursor to indicate the button is disabled */
 }
+
+.search-export-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20px 15px;
+}
+
+.export-container button{
+  padding: 15px 10px;
+  border-radius: 6px;
+  background-color: rgb(60, 235, 60);
+  color: black;
+  font-weight: 600;
+  border: none;
+  font-size: 0.7rem;
+  cursor: pointer;
+  border:2px solid black;
+}
