@@ -5,6 +5,7 @@ import "./BookingData.css";
 import { Search } from "@mui/icons-material";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { CSVLink } from "react-csv";
+// import Swal from "sweetalert2";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
@@ -17,6 +18,10 @@ const BookingData = () => {
   const [userDetailsIds, setUserDetailsIds] = useState([]);
 
   // console.log("userdetailsIDS", userDetailsIds);
+
+  // let popupIndex = filteredData.length;
+  // localStorage.setItem("popupIndex", popupIndex);
+  // console.log(typeof Number(localStorage.getItem("popupIndex")));
 
   useEffect(() => {
     const fetchUserDetailsIds = async () => {
@@ -118,6 +123,20 @@ const BookingData = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   const popupIndex = filteredData.length;
+  //   const storedPopupIndex = Number(localStorage.getItem("popupIndex"));
+
+  //   if (popupIndex > storedPopupIndex) {
+  //     localStorage.setItem("popupIndex", popupIndex);
+  //     Swal.fire({
+  //       title: "New Booking!",
+  //       text: "You have a new Booking at your location!",
+  //       icon: "success",
+  //     });
+  //   }
+  // }, [filteredData]);
+
   const handleClick = (index, userDetails) => {
     // Pass index as unique identifier
     const data = quantityData.find(
@@ -175,6 +194,7 @@ const BookingData = () => {
   };
 
   const postData = async (userDetails, index) => {
+    // localStorage.setItem(Number(localStorage.getItem("popupIndex")) - 1);
     const {
       name,
       email,
