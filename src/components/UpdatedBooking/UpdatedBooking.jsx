@@ -135,31 +135,28 @@ const UpdatedBooking = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData
-              .slice()
-              .reverse()
-              .map((booking, index) => (
-                <tr key={booking.id}>
-                  <td>{index + 1}</td>
-                  <td>{booking.name}</td>
-                  <td>{booking.email}</td>
-                  <td>{booking.address}</td>
-                  <td>{booking.tel}</td>
-                  <td>{booking.drivingID}</td>
-                  <td>{booking.vehicle_name}</td>
-                  <td>₹{booking.vehicle_price}</td>
-                  <td>{booking.vehicle_category}</td>
-                  <td>{formatDate(booking.pickUpDate)}</td>
-                  <td>{formatDate(booking.dropOffDate)}</td>
-                  <td>{formatTime(booking.time)}</td>
-                  <td>₹{booking.rentAmount}</td>
-                  <tr>
-                    <td>
-                      <a href={booking.image_Url}>Click Here</a>
-                    </td>
-                  </tr>
+            {filteredData.map((booking, index) => (
+              <tr key={booking.id}>
+                <td>{index + 1}</td>
+                <td>{booking.name}</td>
+                <td>{booking.email}</td>
+                <td>{booking.address}</td>
+                <td>{booking.tel}</td>
+                <td>{booking.drivingID}</td>
+                <td>{booking.vehicle_name}</td>
+                <td>₹{booking.vehicle_price}</td>
+                <td>{booking.vehicle_category}</td>
+                <td>{formatDate(booking.pickUpDate)}</td>
+                <td>{formatDate(booking.dropOffDate)}</td>
+                <td>{formatTime(booking.time)}</td>
+                <td>₹{booking.rentAmount}</td>
+                <tr>
+                  <td>
+                    <a href={booking.image_Url}>Click Here</a>
+                  </td>
                 </tr>
-              ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
