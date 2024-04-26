@@ -5,7 +5,7 @@ import "./BookingData.css";
 import { Search } from "@mui/icons-material";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { CSVLink } from "react-csv";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
@@ -16,12 +16,6 @@ const BookingData = () => {
   const [newQuantity, setNewQuantity] = useState(null);
   const [completionStatus, setCompletionStatus] = useState({});
   const [userDetailsIds, setUserDetailsIds] = useState([]);
-
-  // console.log("userdetailsIDS", userDetailsIds);
-
-  // let popupIndex = filteredData.length;
-  // localStorage.setItem("popupIndex", popupIndex);
-  // console.log(typeof Number(localStorage.getItem("popupIndex")));
 
   useEffect(() => {
     const fetchUserDetailsIds = async () => {
@@ -123,20 +117,6 @@ const BookingData = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const popupIndex = filteredData.length;
-  //   const storedPopupIndex = Number(localStorage.getItem("popupIndex"));
-
-  //   if (popupIndex > storedPopupIndex) {
-  //     localStorage.setItem("popupIndex", popupIndex);
-  //     Swal.fire({
-  //       title: "New Booking!",
-  //       text: "You have a new Booking at your location!",
-  //       icon: "success",
-  //     });
-  //   }
-  // }, [filteredData]);
-
   const handleClick = (index, userDetails) => {
     // Pass index as unique identifier
     const data = quantityData.find(
@@ -194,7 +174,6 @@ const BookingData = () => {
   };
 
   const postData = async (userDetails, index) => {
-    // localStorage.setItem(Number(localStorage.getItem("popupIndex")) - 1);
     const {
       name,
       email,
@@ -301,7 +280,6 @@ const BookingData = () => {
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
-              {/* <th>Location-Selected</th> */}
               <th>Phone No.</th>
               <th>Driving ID</th>
               <th>Selected Vehicle</th>
@@ -316,57 +294,54 @@ const BookingData = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData
-              .slice()
-              .reverse()
-              .map((userDetails, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{userDetailsIds[index]}</td>
-                  <td>{userDetails.name}</td>
-                  <td>{userDetails.email}</td>
-                  <td>{userDetails.address}</td>
-                  {/* <td>{userDetails.userLocation}</td> */}
-                  <td>{userDetails.tel}</td>
-                  <td>{userDetails.drivingID}</td>
-                  <td>{userDetails.vehicle_name}</td>
-                  <td>₹{userDetails.vehicle_price}</td>
-                  <td>{userDetails.vehicle_category}</td>
-                  <td>{formatDate(userDetails.pickUpDate)}</td>
-                  <td>{formatDate(userDetails.dropOffDate)}</td>
-                  <td>{formatTime(userDetails.time)}</td>
-                  <td>₹{userDetails.rentAmount}</td>
-                  <tr>
-                    <td>
-                      <a href={userDetails.image_Url}>Click Here</a>
-                    </td>
-                  </tr>
+            {filteredData.map((userDetails, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{userDetailsIds[index]}</td>
+                <td>{userDetails.name}</td>
+                <td>{userDetails.email}</td>
+                <td>{userDetails.address}</td>
+                {/* <td>{userDetails.userLocation}</td> */}
+                <td>{userDetails.tel}</td>
+                <td>{userDetails.drivingID}</td>
+                <td>{userDetails.vehicle_name}</td>
+                <td>₹{userDetails.vehicle_price}</td>
+                <td>{userDetails.vehicle_category}</td>
+                <td>{formatDate(userDetails.pickUpDate)}</td>
+                <td>{formatDate(userDetails.dropOffDate)}</td>
+                <td>{formatTime(userDetails.time)}</td>
+                <td>₹{userDetails.rentAmount}</td>
+                <tr>
                   <td>
-                    {completionStatus[index] !== "completed" ? (
-                      <button
-                        onClick={() => {
-                          handleClick(index, userDetails);
-                          console.log(requiredData);
-                          console.log("Quantity Data", quantityData);
-                        }}
-                      >
-                        {completionStatus[index]}
-                      </button>
-                    ) : (
-                      <button disabled>{completionStatus[index]}</button>
-                    )}
-                  </td>
-                  <td>
-                    {completionStatus[index] === "completed" ? (
-                      <button onClick={() => postData(userDetails, index)}>
-                        Delete
-                      </button>
-                    ) : (
-                      <button disabled>Complete to enable</button>
-                    )}
+                    <a href={userDetails.image_Url}>Click Here</a>
                   </td>
                 </tr>
-              ))}
+                <td>
+                  {completionStatus[index] !== "completed" ? (
+                    <button
+                      onClick={() => {
+                        handleClick(index, userDetails);
+                        console.log(requiredData);
+                        console.log("Quantity Data", quantityData);
+                      }}
+                    >
+                      {completionStatus[index]}
+                    </button>
+                  ) : (
+                    <button disabled>{completionStatus[index]}</button>
+                  )}
+                </td>
+                <td>
+                  {completionStatus[index] === "completed" ? (
+                    <button onClick={() => postData(userDetails, index)}>
+                      Delete
+                    </button>
+                  ) : (
+                    <button disabled>Complete to enable</button>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
