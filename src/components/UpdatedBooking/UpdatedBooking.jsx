@@ -135,7 +135,7 @@ const UpdatedBooking = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData .reverse().map((booking, index) => (
+            {filteredData.map((booking, index) => (
               <tr key={booking.id}>
                 <td>{index + 1}</td>
                 <td>{booking.name}</td>
