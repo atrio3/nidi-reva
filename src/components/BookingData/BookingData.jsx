@@ -11,12 +11,12 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { CSVLink } from "react-csv";
-import Swal from "sweetalert2";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [pickupDate, setPickupDate] = useState(null); // State for selected pickup date
   const [quantityData, setQuantityData] = useState([]);
   const [requiredData, setRequiredData] = useState({});
   const [newQuantity, setNewQuantity] = useState(null);
@@ -43,7 +43,6 @@ const BookingData = () => {
     fetchUserDetailsIds();
   }, []);
 
-  // Fetch user details
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database);
@@ -60,7 +59,7 @@ const BookingData = () => {
             setFilteredData(filteredData);
             const status = {};
             filteredData.forEach((user, index) => {
-              status[index] = "complete"; // Initialize status with index as key
+              status[index] = "complete";
             });
             setCompletionStatus(status);
           }
@@ -94,7 +93,6 @@ const BookingData = () => {
     fetchBookingData();
   }, []);
 
-  // Handle search functionality
   useEffect(() => {
     const filtered = searchQuery
       ? tableData.filter((user) =>
@@ -103,6 +101,17 @@ const BookingData = () => {
       : tableData;
     setFilteredData(filtered);
   }, [searchQuery, tableData]);
+
+  useEffect(() => {
+    const filtered = pickupDate
+      ? tableData.filter((user) => user.pickUpDate === pickupDate)
+      : tableData;
+    setFilteredData(filtered);
+  }, [pickupDate, tableData]);
+
+  const handlePickupDateChange = (date) => {
+    setPickupDate(date);
+  };
 
   const formatTime = (timeString) => {
     const timeParts = timeString.split(":");
@@ -128,7 +137,6 @@ const BookingData = () => {
     return `${day}/${month}/${year}`;
   };
 
-  // Fetch quantity data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -175,15 +183,13 @@ const BookingData = () => {
   }, [filteredData]);
 
   const handleClick = (index, userDetails) => {
-    // Pass index as unique identifier
     const data = quantityData.find(
       (item) => item.id === userDetails.vehicle_id
     );
-    console.log("Data", data);
     if (data) {
       setCompletionStatus((prevStatus) => ({
         ...prevStatus,
-        [index]: "completed", // Update status using index as key
+        [index]: "completed",
       }));
       setRequiredData(data);
       const indexInQuantity = data.location.findIndex(
@@ -193,13 +199,8 @@ const BookingData = () => {
     }
   };
 
-  // Update the quantity when requiredData changes
-
-  // console.log("ajdnaj", requiredData);
-  console.log("nq", newQuantity);
   useEffect(() => {
     if (Object.keys(requiredData).length > 0 && newQuantity !== null) {
-      console.log(requiredData);
       updateQuantityInFirestore(requiredData);
     }
   }, [requiredData, newQuantity]);
@@ -213,15 +214,11 @@ const BookingData = () => {
     const index = data.location.findIndex((item) => item === "REVA");
     updatedQuantities[index] = newQuantity;
 
-    console.log(updatedQuantities);
-
     const docRef = doc(db, "vehicleQuantityList", data.id);
     try {
       await updateDoc(docRef, { quantity: updatedQuantities });
-      console.log("Document successfully updated!");
       let newArray = { ...data };
       newArray.quantity = [...updatedQuantities];
-      console.log("NewA rray", newArray);
       setQuantityData((prevData) =>
         prevData.map((item) => (item.id === newArray.id ? newArray : item))
       );
@@ -275,15 +272,12 @@ const BookingData = () => {
     );
 
     if (postRes.ok) {
-      // Check if POST was successful
-      // Delete from Firebase
       const userDetailRef = ref(
         database,
         `UserDetails/${userDetailsIds[index]}`
       );
       await remove(userDetailRef);
 
-      // Update local state without re-fetching
       setFilteredData((prevData) => prevData.filter((_, idx) => idx !== index));
       setTableData((prevData) => prevData.filter((_, idx) => idx !== index));
     }
@@ -343,7 +337,15 @@ const BookingData = () => {
             <Search />
           </button>
         </div>
-        {filteredData.length != 0 && (
+        <div className="date-picker-container">
+          <label>Pickup Date:</label>
+          <input
+            type="date"
+            value={pickupDate}
+            onChange={(e) => handlePickupDateChange(e.target.value)}
+          />
+        </div>
+        {filteredData.length !== 0 && (
           <div className="export-container">
             <CSVLink data={filteredData} headers={headers}>
               <button>Export CSV</button>
@@ -351,6 +353,7 @@ const BookingData = () => {
           </div>
         )}
       </div>
+      <hr />
       <div className="table-container">
         <table className="booking-table">
           <thead>
@@ -369,7 +372,7 @@ const BookingData = () => {
               <th>Drop-off Date</th>
               <th>Time</th>
               <th>Total Paid Amount</th>
-              <th>Driving Id Image</th>
+              <th>Driving ID Image</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -381,7 +384,6 @@ const BookingData = () => {
                 <td>{userDetails.name}</td>
                 <td>{userDetails.email}</td>
                 <td>{userDetails.address}</td>
-                {/* <td>{userDetails.userLocation}</td> */}
                 <td>{userDetails.tel}</td>
                 <td>{userDetails.drivingID}</td>
                 <td>{userDetails.vehicle_name}</td>
@@ -391,11 +393,9 @@ const BookingData = () => {
                 <td>{formatDate(userDetails.dropOffDate)}</td>
                 <td>{formatTime(userDetails.time)}</td>
                 <td>₹{userDetails.rentAmount}</td>
-                <tr>
-                  <td>
-                    <a href={userDetails.image_Url}>Click Here</a>
-                  </td>
-                </tr>
+                <td>
+                  <a href={userDetails.image_Url}>Click Here</a>
+                </td>
                 <td>
                   {completionStatus[index] !== "completed" ? (
                     <button
@@ -403,7 +403,6 @@ const BookingData = () => {
                         handleClick(index, userDetails);
                         console.log(requiredData);
                         console.log("Quantity Data", quantityData);
-                        decreamentLength();
                       }}
                     >
                       {completionStatus[index]}

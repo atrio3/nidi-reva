@@ -9,7 +9,7 @@
 
 .booking-data-title {
   color: #333333;
-  margin-bottom: 20px; /* Reduced margin for better spacing */
+  margin-bottom: 20px;
 }
 
 .booking-table {
@@ -21,7 +21,7 @@
 .booking-table td {
   border: 1px solid black;
   padding: 10px;
-  text-align: center; /* Center-align content */
+  text-align: center;
 }
 
 .booking-table th {
@@ -78,23 +78,33 @@
   overflow-y: auto;
 }
 
-.filter-container {
+.date-picker-container {
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.filter-container label {
+.date-picker-container label {
   font-weight: bold;
   margin-right: 10px;
 }
 
-.filter-container select {
+.date-picker-container input[type="date"] {
   padding: 10px;
-  border-radius: 6px;
   border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 16px;
+  margin-left: 15px;
+  background-color: #f9f9f9;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.date-picker-container input[type="date"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .search-container {
@@ -124,21 +134,22 @@
   background-color: #cccccc;
   color: blue;
 }
+
 button:disabled {
-  color: #999; /* Light grey text */
-  background-color: #ccc; /* Darker grey background */
-  border: 1px solid #aaa; /* Grey border */
-  cursor: not-allowed; /* Cursor to indicate the button is disabled */
+  color: #999;
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  cursor: not-allowed;
 }
 
-.search-export-container{
+.search-export-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 20px 15px;
 }
 
-.export-container button{
+.export-container button {
   padding: 15px 10px;
   border-radius: 6px;
   background-color: rgb(60, 235, 60);
@@ -147,5 +158,5 @@ button:disabled {
   border: none;
   font-size: 0.7rem;
   cursor: pointer;
-  border:2px solid black;
+  border: 2px solid black;
 }
