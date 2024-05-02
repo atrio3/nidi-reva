@@ -403,6 +403,7 @@ const BookingData = () => {
                         handleClick(index, userDetails);
                         console.log(requiredData);
                         console.log("Quantity Data", quantityData);
+                        decreamentLength();
                       }}
                     >
                       {completionStatus[index]}
