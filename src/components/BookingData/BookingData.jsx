@@ -3,15 +3,8 @@ import { ref, onValue, remove } from "firebase/database";
 import { database, db } from "../../firebase";
 import "./BookingData.css";
 import { Search } from "@mui/icons-material";
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { CSVLink } from "react-csv";
-import Swal from "sweetalert2";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
@@ -23,9 +16,6 @@ const BookingData = () => {
   const [newQuantity, setNewQuantity] = useState(null);
   const [completionStatus, setCompletionStatus] = useState({});
   const [userDetailsIds, setUserDetailsIds] = useState([]);
-  const [length, setLength] = useState({});
-
-  console.log("Available Length is", length["length"]);
 
   useEffect(() => {
     const fetchUserDetailsIds = async () => {
@@ -71,27 +61,6 @@ const BookingData = () => {
       );
     };
     fetchData();
-  }, []);
-
-  //Fetch Length
-  useEffect(() => {
-    const fetchBookingData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "bookingListREVA"));
-        if (!querySnapshot.empty) {
-          // Assuming only one document is present
-          const singleDoc = querySnapshot.docs[0].data();
-          console.log("Document data:", singleDoc);
-          setLength(singleDoc); // Handle the state update accordingly
-        } else {
-          console.log("No documents found in collection.");
-        }
-      } catch (error) {
-        console.error("Error fetching document: ", error);
-      }
-    };
-
-    fetchBookingData();
   }, []);
 
   useEffect(() => {
@@ -155,33 +124,6 @@ const BookingData = () => {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const incrementLength = async () => {
-      const docRef = doc(db, "bookingListREVA", "JHu5mAnbTcOM2CR7g1LC");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const currentLength = docSnap.data().length;
-
-        if (filteredData.length > currentLength) {
-          await updateDoc(docRef, {
-            length: currentLength + 1,
-          });
-          Swal.fire({
-            title: "New Booking!",
-            text: "Someone Has Booked A Vehicle!",
-            icon: "success",
-          });
-        } else {
-          console.log("Length is same");
-        }
-      } else {
-        console.log("Document does not exist!");
-      }
-    };
-
-    incrementLength();
-  }, [filteredData]);
 
   const handleClick = (index, userDetails) => {
     const data = quantityData.find(
@@ -284,29 +226,6 @@ const BookingData = () => {
     }
   };
 
-  const decreamentLength = async () => {
-    const docRef = doc(db, "bookingListREVA", "JHu5mAnbTcOM2CR7g1LC");
-
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const currentLength = docSnap.data().length;
-        if (currentLength > 0) {
-          await updateDoc(docRef, {
-            length: currentLength - 1,
-          });
-          console.log("Length decremented successfully");
-        } else {
-          console.log("Length is already at minimum value");
-        }
-      } else {
-        console.log("Document does not exist!");
-      }
-    } catch (error) {
-      console.error("Failed to decrement length: ", error);
-    }
-  };
-
   const headers = [
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
@@ -402,9 +321,6 @@ const BookingData = () => {
                     <button
                       onClick={() => {
                         handleClick(index, userDetails);
-                        console.log(requiredData);
-                        console.log("Quantity Data", quantityData);
-                        decreamentLength();
                       }}
                     >
                       {completionStatus[index]}
