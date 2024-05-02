@@ -11,6 +11,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { CSVLink } from "react-csv";
+import Swal from "sweetalert2";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
