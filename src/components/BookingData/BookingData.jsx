@@ -64,12 +64,23 @@ const BookingData = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = searchQuery
-      ? tableData.filter((user) =>
+    const filteredIndex = searchQuery
+      ? tableData.findIndex((user) =>
           user.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : tableData;
-    setFilteredData(filtered);
+    console.log(filteredIndex);
+    const filteredElement = searchQuery
+      ? tableData.find((user) =>
+          user.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : tableData;
+
+    console.log(filteredElement);
+    const newFiltered = [];
+
+    newFiltered[filteredIndex] = filteredElement;
+    setFilteredData(newFiltered);
   }, [searchQuery, tableData]);
 
   useEffect(() => {
