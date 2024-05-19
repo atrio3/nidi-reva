@@ -234,6 +234,7 @@ const BookingData = () => {
 
       setFilteredData((prevData) => prevData.filter((_, idx) => idx !== index));
       setTableData((prevData) => prevData.filter((_, idx) => idx !== index));
+      window.location.reload();
     }
   };
 
