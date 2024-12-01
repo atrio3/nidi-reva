@@ -5,6 +5,7 @@ import "./BookingData.css";
 import { Search } from "@mui/icons-material";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { CSVLink } from "react-csv";
+import { update } from "firebase/database";
 
 const BookingData = () => {
   const [tableData, setTableData] = useState([]);
@@ -16,6 +17,40 @@ const BookingData = () => {
   const [newQuantity, setNewQuantity] = useState(null);
   const [completionStatus, setCompletionStatus] = useState({});
   const [userDetailsIds, setUserDetailsIds] = useState([]);
+  const [vehicleNumbers, setVehicleNumbers] = useState({});
+
+  // Handle vehicle number input changes
+  const handleVehicleNumberChange = (index, value) => {
+    setVehicleNumbers((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+  };
+
+  // Save vehicle number to Firebase
+  const saveVehicleNumber = async (userId, index) => {
+    if (!vehicleNumbers[index]) {
+      alert("Please enter a vehicle number before saving.");
+      return;
+    }
+    try {
+      const userDetailsRef = ref(database, `UserDetails/${userId}`);
+      await update(userDetailsRef, { vehicleNumber: vehicleNumbers[index] });
+
+      setTableData((prev) =>
+        prev.map((user, idx) =>
+          idx === index
+            ? { ...user, vehicleNumber: vehicleNumbers[index] }
+            : user
+        )
+      );
+
+      alert("Vehicle number updated successfully!");
+    } catch (error) {
+      console.error("Error updating vehicle number:", error);
+      alert("Failed to update vehicle number. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const fetchUserDetailsIds = async () => {
@@ -137,9 +172,7 @@ const BookingData = () => {
   }, []);
 
   const handleClick = (index, userDetails) => {
-    const data = quantityData.find(
-      (item) => item.id === userDetails.vehicle_id
-    );
+    const data = quantityData.find((item) => item.id == userDetails.vehicle_id);
     if (data) {
       setCompletionStatus((prevStatus) => ({
         ...prevStatus,
@@ -291,7 +324,6 @@ const BookingData = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>UserDetail ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
@@ -300,19 +332,22 @@ const BookingData = () => {
               <th>Selected Vehicle</th>
               <th>Vehicle Price</th>
               <th>Vehicle Category</th>
+              <th>Vehicle Number</th>
               <th>Pickup Date</th>
               <th>Drop-off Date</th>
               <th>Time</th>
               <th>Total Paid Amount</th>
               <th>Driving ID Image</th>
               <th>Status</th>
+              <th>Status 2</th>
+              <th>Edit Vehicle Number</th>
+              <th>Save</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.map((userDetails, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
-                <td>{userDetailsIds[index]}</td>
                 <td>{userDetails.name}</td>
                 <td>{userDetails.email}</td>
                 <td>{userDetails.address}</td>
@@ -321,6 +356,7 @@ const BookingData = () => {
                 <td>{userDetails.vehicle_name}</td>
                 <td>₹{userDetails.vehicle_price}</td>
                 <td>{userDetails.vehicle_category}</td>
+                <td>{userDetails.vehicleNumber}</td>
                 <td>{formatDate(userDetails.pickUpDate)}</td>
                 <td>{formatDate(userDetails.dropOffDate)}</td>
                 <td>{formatTime(userDetails.time)}</td>
@@ -343,12 +379,50 @@ const BookingData = () => {
                 </td>
                 <td>
                   {completionStatus[index] === "completed" ? (
-                    <button onClick={() => postData(userDetails, index)}>
+                    <button
+                      onClick={() => {
+                        postData(userDetails, index);
+                      }}
+                    >
                       Delete
                     </button>
                   ) : (
                     <button disabled>Complete to enable</button>
                   )}
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={vehicleNumbers[index] || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setVehicleNumbers((prev) => ({
+                        ...prev,
+                        [index]: value, // Allow the field to be fully empty during editing
+                      }));
+                    }}
+                    onBlur={() => {
+                      if (!vehicleNumbers[index]) {
+                        setVehicleNumbers((prev) => ({
+                          ...prev,
+                          [index]: "Not Assigned", // Only set to "Not Assigned" when the field loses focus and is empty
+                        }));
+                      }
+                    }}
+                    placeholder="Enter Vehicle No."
+                  />
+                </td>
+                <td>
+                  <button
+                    onClick={() =>
+                      saveVehicleNumber(userDetailsIds[index], index)
+                    }
+                    disabled={
+                      !vehicleNumbers[index] && !userDetails.vehicleNumber
+                    }
+                  >
+                    Save
+                  </button>
                 </td>
               </tr>
             ))}
